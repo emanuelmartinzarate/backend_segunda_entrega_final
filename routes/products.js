@@ -1,20 +1,19 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+
+const Contenedor = require('../contenedor')
+
+const contenedorProducts = new Contenedor('producs.json')
 
 let products = []
 
 router.get('/', function(req, res, next) {
-  res.json(products);
+  res.json(contenedorProducts.getAll());
 });
 
 router.get('/:id', function(req, res, next) {
   const { id } = req.params
-  let product = null
-  products.forEach(item =>{
-      if(item.id === Number(id)){
-        product = item
-      }
-  })
+  let product = contenedorProducts.getByID(id)
 
   if(!product){
     return res.status(400).send({error: `El producto con id ${id} no existe`})
@@ -25,10 +24,9 @@ router.get('/:id', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
   const { title, price, thumbnail} =req.body
-  let product = {"id":products.length +1, "title":title, "price": price, "thumbnail":thumbnail}
-  products.push(product)
-  // res.json(product)
-  res.render('index')
+  let product = {"title":title, "price": price, "thumbnail":thumbnail}
+  contenedorProducts.save(product)
+  res.json(product)
 });
 
 router.put('/', function(req, res, next) {
@@ -45,8 +43,7 @@ router.put('/', function(req, res, next) {
 
 router.delete('/:id', function(req, res, next) {
   const { id } = req.params
-  let productsFiltrado = products.filter(item => item.id !== Number(id))
-  products = productsFiltrado;
+  contenedorProducts.deleteByID(id)
   res.json( {msg: `Se elimino el ${id} de la lista de productos`})
 });
 
