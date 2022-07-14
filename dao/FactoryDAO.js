@@ -1,13 +1,13 @@
-const CartMemoryDAO = require('./cart/cartMemoryDAO')
-const ProductMemoryDAO = require('./products/productMemoryDAO')
+const CartMemoryDAO = require('./cart/CartMemoryDAO')
+const ProductMemoryDAO = require('./product/productMemoryDAO')
 const CartFileDAO = require('./cart/cartFileDAO')
-const ProductFileDAO = require('./products/productFileDAO')
+const ProductFileDAO = require('./product/productFileDAO')
 const CartMongoDAO = require('./cart/cartMongoDAO')
-const ProductMongoDAO = require('./products/productMongoDAO')
+const ProductMongoDAO = require('./product/productMongoDAO')
 
 const FactoryDAO = () => {
 
-    const typeDB = process.env.typeDB
+    const typeDB = process.env.typeDB || 'memory'
 
     if(typeDB == 'memory') {
         console.log('Generate DAO with memory');
