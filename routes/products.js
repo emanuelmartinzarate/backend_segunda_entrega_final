@@ -28,13 +28,14 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.post('/', auth, function(req, res, next) {
-  res.json(DAO.product.save(req.body))
+  const product = DAO.product.save(req.body)
+  res.json(product)
 });
 
 router.put('/', auth, function(req, res, next) {
-  
-  if(DAO.product.edit(req.body)){
-    return res.status(400).send({error: `El producto con id ${id} no existe`})
+    
+  if(!DAO.product.edit(req.body)){
+    return res.status(400).send({error: `El producto con id ${req.body.id} no existe`})
   }
   
   res.json(req.body)

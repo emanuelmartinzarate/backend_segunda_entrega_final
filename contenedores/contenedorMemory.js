@@ -5,28 +5,28 @@ class ContenedorMemory {
         this.data = []
     }
     
-    async save(obj) {
+    save(obj) {
         obj['id'] = this.data.length + 1;
         obj['timestamp'] = Date.now()
         this.data.push(obj)
         return obj
     }
 
-    async getByID(id) {
+    getByID(id) {
         const objID = this.data.find(obj => obj.id == id)
         return objID
     }
 
-    async edit(obj){
+    edit(obj){
         const idx = this.data.findIndex(item => item.id == obj.id)
         if (idx < 0)
-            return idx     
+            return this.data[idx]     
 
         this.data[idx] = obj
-        return obj
+        return this.data[idx]
     }
 
-    async getAll() {
+    getAll() {
         return this.data
     }
 
