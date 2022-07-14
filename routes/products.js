@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const Contenedor = require('../contenedor')
+const FactoryDAO = require('../dao/FactoryDAO')
 
-const contenedorProducts = new Contenedor('producs.json')
-
+const DAO = FactoryDAO()
 
 function auth (req,res,next){
   if('admin' in req.headers) next()
@@ -14,12 +13,12 @@ function auth (req,res,next){
 }
 
 router.get('/', function(req, res, next) {
-  res.json(contenedorProducts.getAll());
+  res.json(await DAO.product.getAll());
 });
 
 router.get('/:id', function(req, res, next) {
-  const { id } = req.params
-  let product = contenedorProducts.getByID(id)
+  const { id } = req.params;
+  let product = await DAO.product.getByID(id)
 
   if(!product){
     return res.status(400).send({error: `El producto con id ${id} no existe`})
@@ -29,24 +28,21 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.post('/', auth, function(req, res, next) {
-  const product =req.body
-  contenedorProducts.save(product)
-  res.json(product)
+  res.json(await DAO.product.save(req.body))
 });
 
 router.put('/', auth, function(req, res, next) {
-  const product =req.body
   
-  if(contenedorProducts.edit(product)){
+  if(await DAO.product.edit(req.body)){
     return res.status(400).send({error: `El producto con id ${id} no existe`})
   }
   
-  res.json(product)
+  res.json(req.body)
 });
 
 router.delete('/:id', auth, function(req, res, next) {
   const { id } = req.params
-  contenedorProducts.deleteByID(id)
+  await DAO.product.deleteByID(id)
   res.json( {msg: `Se elimino el ${id} de la lista de productos`})
 });
 
